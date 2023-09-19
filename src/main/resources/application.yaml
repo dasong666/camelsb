@@ -1,4 +1,17 @@
-route1:
-  autoStartup: false
+server:
+  port: 8088
 
+spring:
+  application:
+    name: my-camel-spring-boot-app
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,metrics,camelroutes
+
+camel:
+  management:
+    jmx:
+      enabled: true

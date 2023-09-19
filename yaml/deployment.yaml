@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: camelsb-demo
+  labels:
+    app: camelsb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: camelsb
+  template:
+    metadata:
+      labels:
+        app: camelsb
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: camelsb
+        image: quay.io/dasong/camelsb:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        envFrom: 
+        - configMapRef:
+            name: route-config
+

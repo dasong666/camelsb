@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: camelsb-demo-service
+  labels:
+    app: camelsb
+spec:
+  type: ClusterIP
+  selector:
+    app: camelsb
+  ports:
+    - port: 80  # You can adjust this port based on your application's needs
+      targetPort: 8088  # This should match the port on which your application inside the pod is listening
+      name: http
+
