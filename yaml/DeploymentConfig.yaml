@@ -1,0 +1,33 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: camelsb-demo
+  labels:
+    app: camelsb
+spec:
+  replicas: 1
+  selector:
+    app: camelsb
+  template:
+    metadata:
+      labels:
+        app: camelsb
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: camelsb
+        image: quay.io/dasong/camelsb:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        envFrom: 
+        - configMapRef:
+            name: route-config
+  triggers:
+  - type: ConfigChange
+
