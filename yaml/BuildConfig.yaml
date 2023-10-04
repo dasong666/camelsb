@@ -1,0 +1,51 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: rhc-ferouter-buildconfig
+  namespace: istio-system
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: DockerImage
+      name: >-
+        jfrog-docker.inside.ups.com/aff_tsis_docker_local_dev/ferouterrcvfrommsd:6.0.1-SNAPSHOT
+    pushSecret:
+      name: jfrog
+  resources:
+    limits:
+      cpu: 400m
+      memory: 1200Mi
+    requests:
+      cpu: 100m
+      memory: 1200Mi
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: DockerImage
+        name: >-
+          jfrog-docker.inside.ups.com/docker_redhat_golden_registry/ubi8/openjdk-17:1.16-2
+      pullSecret:
+        name: jfrog
+      env:
+        - name: MAVEN_SETTINGS_XML
+          value: /opt/app-root/src/.m2/settings.xml
+        - name: MAVEN_ARGS
+          value: "-pl feRouterRcvFromMSD install"  # specify the child module
+  postCommit: {}
+  source:
+    type: Git
+    git:
+      uri: 'https://tfs.ups.com/tfs/upsprod/P07AGit_TSIS/_git/openShift_FE_Routes'
+      ref: Story5070589_UpdatetoRHSpringBootVersion
+    #contextDir: feRouterRcvFromMSD
+    sourceSecret:
+      name: gitsecret
+    secrets:
+      - secret:
+          name: settings-mvn
+        destinationDir: .m2
+  runPolicy: Serial
+
+
